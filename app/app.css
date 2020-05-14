@@ -1,0 +1,189 @@
+/* Main */
+:root {
+    --primary-color: #8143fc;
+    --focus-color: #7735fc;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    background: #f6f5f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #111111;
+    margin-top: 48px;
+}
+.container {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+.not-supported {
+    width: 400px;
+    margin: 16px auto 8px;
+    text-align: center;
+    color: #ca0000;
+    font-weight: 500;
+}
+
+/* Connection form */
+.container form {
+    width: 500px;
+    padding: 0 3rem;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.input-group {
+    display: flex;
+}
+.input {
+    margin-right: 16px;
+}
+input:not([type=submit]) {
+	background-color: #eee;
+	border: none;
+	padding: 12px 15px;
+	margin-bottom: 16px;
+    width: 100%;
+    border-bottom: 1px solid transparent;
+    transition:  all .3s linear; 
+}
+input:focus {
+    border-bottom: solid 1px var(--primary-color); 
+    outline: 0;
+    box-shadow: 0 2px 6px -8px rgba(var(--primary-color), .45);
+}
+input[type=submit] {
+	border-radius: 20px;
+	background-color: var(--primary-color);
+	color: #FFFFFF;
+	font-weight: bold;
+	padding: 12px 45px;
+    text-transform: uppercase;
+    margin: 24px auto;
+}
+input[type=submit]:focus {
+	background-color: var(--focus-color);
+}
+
+/* Teams list */
+#teams {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+fk-team {
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+    margin: 1.5rem 4rem;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+fk-team h4 {
+    text-align: center;
+    margin: 0;
+    padding: 0.5rem;
+}
+fk-team ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0.5rem 0;
+}
+li {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    cursor: grab;
+}
+li::after {
+    content: "";
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 7.5px;
+    margin-left: 10px;
+    background: rgb(255, 41, 41);
+    vertical-align: sub;
+}
+.online::after {
+    background: rgb(30, 255, 30);
+}
+
+/* ChatColor */
+[chatcolor="§4"] {
+    background-color: #be0000;
+    color: #fff;
+}
+[chatcolor="§c"] {
+    background-color: #fe3f3f;
+    color: #fff;
+}
+[chatcolor="§6"] {
+    background-color: #ff8e2b;
+    color: #fff;
+}
+[chatcolor="§e"] {
+    background-color: #fefe3f;
+}
+[chatcolor="§2"] {
+    background-color: #00be00;
+    color: #fff;
+}
+[chatcolor="§a"] {
+    background-color: #3ffe3f;
+}
+[chatcolor="§b"] {
+    background-color: #3ffefe;
+}
+[chatcolor="§3"] {
+    background-color: #00bebe;
+    color: #fff;
+}
+[chatcolor="§1"] {
+    background-color: #0000be;
+    color: #fff;
+}
+[chatcolor="§9"] {
+    background-color: #3f3ffe;
+    color: #fff;
+}
+[chatcolor="§d"] {
+    background-color: #fe3ffe;
+    color: #fff;
+}
+[chatcolor="§5"] {
+    background-color: #be00be;
+    color: #fff;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+}
+.actions i:first-child {
+    margin-left: auto;
+}
+i {
+    width: 16px;
+    height: 16px;
+    margin: .25rem;
+    display: block;
+    cursor: pointer;
+}
+i.add {
+    background-image: url(img/user-add.svg);
+}
+i.edit {
+    background-image: url(img/edit-pencil.svg);
+}
+i.remove {
+    background-image: url(img/trash.svg);
+}

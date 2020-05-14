@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>FallenKingdom Board</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="js/app.js" type="module" defer></script>
+</head>
+<body>
+    <section class="container">
+        <p class="not-supported">Votre navigateur ne supporte pas les WebComponents et/ou les modules JS natifs, utilisés par le FkBoard. Pour l'utiliser, merci de mettre à jour votre navigateur.</p>
+        <form id="connection" method="post" action="#" onsubmit="return false;">
+            <h1>FkBoard</h1>
+            <div class="input-group">
+                <div class="input"><label for="adress">Adresse</label><input type="text" name="adress" id="adress" placeholder="localhost" size="9" required></div>
+                <div class="input"><label for="port">Port</label><input type="number" name="port" id="port" placeholder="50000" size="1" required></div>
+            </div>
+            <div class="input"><label for="pass">Mot de passe</label><input type="password" name="pass" id="pass"></div>
+            <input type="submit" value="Connexion">
+        </form>
+        <div id="teams"></div>
+    </section>
+</body>
+</html>

@@ -1,0 +1,7 @@
+name: FkBoard
+version: ${project.version}
+main: com.github.syldium.fkboard.FkBoard
+api-version: "1.13"
+depend: [FallenKingdom]
+authors: [syldium]
+description: Interface de configuration web pour le plugin de FallenKingdom (partie serveur)
