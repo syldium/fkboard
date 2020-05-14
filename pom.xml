@@ -78,7 +78,7 @@
             <artifactId>fallenkingdom</artifactId>
             <version>2.19.0-beta1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../plugins/fallenkingdom.jar</systemPath>
+            <systemPath>${project.basedir}/plugins/FallenKingdom/target/FallenKingdom.jar</systemPath>
         </dependency>
         <!-- WebSocket server -->
         <dependency>
