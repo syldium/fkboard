@@ -76,7 +76,7 @@
         <dependency>
             <groupId>fr.devsylone</groupId>
             <artifactId>fallenkingdom</artifactId>
-            <version>2.19.0-beta1</version>
+            <version>2.19.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/plugins/FallenKingdom/target/FallenKingdom.jar</systemPath>
         </dependency>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
-            <version>1.5.0</version>
+            <version>1.5.1</version>
         </dependency>
         <!-- Annotations -->
         <dependency>
@@ -93,11 +93,11 @@
             <version>18.0.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- GSON -->
+        <!-- GSON (same as server version) -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.6</version>
+            <version>2.8.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

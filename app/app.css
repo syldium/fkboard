@@ -45,31 +45,45 @@ body {
 .input {
     margin-right: 16px;
 }
-input:not([type=submit]) {
+input:not([type=submit]):not(.choices__input) {
 	background-color: #eee;
 	border: none;
 	padding: 12px 15px;
 	margin-bottom: 16px;
-    width: 100%;
     border-bottom: 1px solid transparent;
     transition:  all .3s linear; 
+}
+form input:not([type=submit]) {
+    width: 100%;
+}
+.choices {
+    display: inline-block;
+}
+.choices__inner {
+    width: 225px !important;
 }
 input:focus {
     border-bottom: solid 1px var(--primary-color); 
     outline: 0;
     box-shadow: 0 2px 6px -8px rgba(var(--primary-color), .45);
 }
-input[type=submit] {
+.save-btn, input[type=submit] {
 	border-radius: 20px;
 	background-color: var(--primary-color);
 	color: #FFFFFF;
 	font-weight: bold;
 	padding: 12px 45px;
     text-transform: uppercase;
+}
+form input[type=submit] {
     margin: 24px auto;
 }
-input[type=submit]:focus {
+.save-btn:focus, input[type=submit]:focus {
 	background-color: var(--focus-color);
+}
+
+h2, button {
+    margin-left: 32px;
 }
 
 /* Teams list */
@@ -186,4 +200,70 @@ i.edit {
 }
 i.remove {
     background-image: url(img/trash.svg);
+}
+
+/* Rules */
+#rules {
+    padding: 24px;
+}
+#rules .rules-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 16px;
+}
+fk-rule {
+    min-width: 200px;
+}
+fk-rule label[data-info] {
+    border-bottom: dashed 1px rgba(0,0,0,0.3);
+    cursor: help;
+    position: relative;
+}
+fk-rule label[data-info]::after {
+    content: attr(data-info);
+    display: inline;
+    position: absolute;
+    top: 22px; left: 0;
+    opacity: 0;
+    width: 230px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5em;
+    padding: 0.5em 0.8em;
+    background: rgba(0,0,0,0.9);
+    color: #fff;
+    pointer-events: none; /* This prevents the box from apearing when hovered. */
+    transition: opacity 250ms, top 250ms;
+}
+fk-rule label[data-info]::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 12px; left: 20px;
+    opacity: 0;
+    width: 0; height: 0;
+    border: solid transparent 5px;
+    border-bottom-color: rgba(0,0,0,0.9);
+    transition: opacity 250ms, top 250ms;
+}
+fk-rule label[data-info]:hover {z-index: 2;} /* Keeps the info boxes on top of other elements */
+fk-rule label[data-info]:hover::after,
+fk-rule label[data-info]:hover::before {opacity: 1;}
+fk-rule label[data-info]:hover::after {top: 30px;}
+fk-rule label[data-info]:hover::before {top: 20px;}
+#rules input[type=number] {
+    width: 70px;
+}
+#rules #DayDuration {
+    width: 100px;
+}
+
+/* Utilities */
+.invisible {
+    display: none !important;
+}
+.save-btn {
+    margin-left: auto;
+    margin-right: 64px;
+    display: block;
 }

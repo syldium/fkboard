@@ -49,7 +49,7 @@ export class DataBridge
         if (typeof playerName === 'undefined') {
             return;
         }
-        this.ws.send(JSON.stringify({ code: 1001, 'action': `MOVE`, 'player': playerName, 'team': teamName }));
+        this.ws.send(JSON.stringify({ code: 2001, 'action': `MOVE`, 'player': playerName, 'team': teamName }));
     }
 
     /**
@@ -62,7 +62,7 @@ export class DataBridge
         if (typeof teamName === 'undefined') {
             return;
         }
-        this.ws.send(JSON.stringify({ code: 1002, 'action': `INSERT TEAM`, 'team': teamName }));
+        this.ws.send(JSON.stringify({ code: 2002, 'action': `INSERT TEAM`, 'team': teamName }));
     }
 
     /**
@@ -72,7 +72,7 @@ export class DataBridge
      */
     sendTeamNameChange(previousName, newName)
     {
-        this.ws.send(JSON.stringify({ code: 1003, 'action': `CHANGE TEAM NAME`, 'previous': previousName, 'newName': newName }));
+        this.ws.send(JSON.stringify({ code: 2003, 'action': `CHANGE TEAM NAME`, 'previous': previousName, 'newName': newName }));
     }
 
     /**
@@ -85,7 +85,20 @@ export class DataBridge
         if (typeof teamName === 'undefined') {
             return;
         }
-        this.ws.send(JSON.stringify({ code: 1005, 'action': `DELETE TEAM`, 'team': teamName }));
+        this.ws.send(JSON.stringify({ code: 2005, 'action': `DELETE TEAM`, 'team': teamName }));
+    }
+
+    askRulesList()
+    {
+        this.ws.send(JSON.stringify({ code: 2006, 'action': `LIST RULES` }));
+    }
+
+    /**
+     * Send a rule change.
+     */
+    sendRuleChange(rule, value)
+    {
+        this.ws.send(JSON.stringify({ code: 2007, 'action': `EDIT RULE`, 'rule': rule, 'value': value }));
     }
 
     /**

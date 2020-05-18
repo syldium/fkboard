@@ -2,14 +2,15 @@ package com.github.syldium.fkboard.listeners;
 
 import com.github.syldium.fkboard.FkBoard;
 import com.github.syldium.fkboard.websocket.responses.PlayerChange;
+import com.github.syldium.fkboard.websocket.responses.RuleChange;
 import com.github.syldium.fkboard.websocket.responses.TeamsList;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.PlayerTeamChangeEvent;
+import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class FallenKingdomListener implements Listener {
 
@@ -30,12 +31,17 @@ public class FallenKingdomListener implements Listener {
         if (event.getUpdateType().equals(TeamUpdateEvent.TeamUpdate.SET_BASE)) {
             return;
         }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                TeamsList teamsList = new TeamsList(FkPI.getInstance().getTeamManager().getTeams(), plugin.getPlayerStatus());
-                plugin.getWSServer().broadcast(teamsList);
-            }
-        }.runTaskLaterAsynchronously(plugin, 1L);
+        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+            TeamsList teamsList = new TeamsList(FkPI.getInstance().getTeamManager().getTeams(), plugin.getPlayerStatus());
+            plugin.getWSServer().broadcast(teamsList);
+        }, 1L);
+    }
+
+    @EventHandler
+    public <T> void onRuleChange(RuleChangeEvent<T> event) {
+        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+            RuleChange ruleChange = new RuleChange(event.getRule(), event.getValue());
+            plugin.getWSServer().broadcast(ruleChange);
+        }, 1L);
     }
 }

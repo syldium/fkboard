@@ -1,5 +1,6 @@
 import { DataBridge } from "./DataBridge.js";
 import { Team } from "./components/Team.js";
+import { Rule } from "./components/Rule.js";
 
 export class FkEditor
 {
@@ -17,7 +18,9 @@ export class FkEditor
             return false;
         };
         this.teamsDiv = document.getElementById('teams');
+        this.rulesDiv = document.getElementById('rules');
         this.players = {};
+        this.modifiedRules = [];
     }
 
     /**
@@ -32,11 +35,14 @@ export class FkEditor
         this.dataBridge = new DataBridge(new WebSocket(`ws://${adress}:${port}/socket`), password);
         this.dataBridge.addReceiver(1000, this.loadTeams.bind(this));
         this.dataBridge.addReceiver(1001, this.playerMove.bind(this));
+        this.dataBridge.addReceiver(1002, this.loadRules.bind(this));
+        this.dataBridge.addReceiver(1003, this.changeRule.bind(this));
         this.dataBridge.addReceiver(401, () => {
             if (this.dataBridge.authSent) {
                 alert('Mot de passe incorrect');
             }
         });
+        this.dataBridge.addReceiver(200, () => this.dataBridge.askRulesList());
     }
 
     /**
@@ -49,6 +55,12 @@ export class FkEditor
         // Hide connection form
         if (this.form.style.display !== 'none') {
             this.form.style.display = 'none';
+            const h2Teams = document.createElement('h2');
+            h2Teams.appendChild(document.createTextNode('Équipes'));
+            this.teamsDiv.parentNode.insertBefore(h2Teams, this.teamsDiv);
+            const h2Rules = document.createElement('h2');
+            h2Rules.appendChild(document.createTextNode('Règles'));
+            this.rulesDiv.parentNode.insertBefore(h2Rules, this.rulesDiv);
         }
         // Remove previous nodes, except __noteam
         Array.from(this.teamsDiv.children)
@@ -63,6 +75,30 @@ export class FkEditor
         if (!this.teamsDiv.hasChildNodes() || this.teamsDiv.hasChildNodes() && this.teamsDiv.lastElementChild.dataset.name !== '__noteam') {
             this.teamsDiv.appendChild(this.createTeamElement("__noteam"));
         }
+    }
+
+    loadRules(json)
+    {
+        Object.values(json.rules).sort((r1, r2) => Rule.scoreOf(r2) - Rule.scoreOf(r1)).forEach(rule_ => {
+            const element = new Rule(rule_.name, rule_.value, rule_.help);
+            element.addInputListener(this.modifiedRules, () => {
+                if (this.modifiedRules.length > 0) {
+                    this.saveButton.classList.remove('invisible');
+                } else {
+                    this.saveButton.classList.add('invisible');
+                }
+            });
+            this.rulesDiv.firstChild.appendChild(element);
+        });
+        this.saveButton = document.createElement('button')
+        this.saveButton.appendChild(document.createTextNode('Enregistrer'));
+        this.saveButton.classList.add('invisible', 'save-btn');
+        this.saveButton.onclick = () => {
+            this.modifiedRules.forEach(rule => {
+                this.dataBridge.sendRuleChange(rule.name, rule.getNewValue());
+            });
+        }
+        this.rulesDiv.appendChild(this.saveButton);
     }
 
     /**
@@ -82,6 +118,21 @@ export class FkEditor
             playerElement.classList.remove('online');
         }
         this.getTeamPlayersListElement(json.team).lastChild.previousSibling.appendChild(playerElement);
+    }
+
+    changeRule(json)
+    {
+        const element = this.rulesDiv.querySelector(`fk-rule[data-name="${json.rule}"]`);
+        element.updateValue(json.value);
+        const index = this.modifiedRules.indexOf(element);
+        if (index > -1) {
+            this.modifiedRules.splice(index, 1);
+        }
+        if (this.modifiedRules.length > 0) {
+            this.saveButton.classList.remove('invisible');
+        } else {
+            this.saveButton.classList.add('invisible');
+        }
     }
 
     /**

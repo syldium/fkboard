@@ -2,6 +2,7 @@ package com.github.syldium.fkboard.websocket;
 
 import com.github.syldium.fkboard.FkBoard;
 import com.github.syldium.fkboard.status.PlayerStatus;
+import com.github.syldium.fkboard.websocket.commands.CommandsManager;
 import com.github.syldium.fkboard.websocket.responses.LoginRequired;
 import com.github.syldium.fkboard.websocket.responses.Response;
 import com.github.syldium.fkboard.websocket.responses.TeamsList;
@@ -11,7 +12,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.FkPI;
-import fr.devsylone.fkpi.api.ITeam;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -29,11 +30,13 @@ public class WSServer extends WebSocketServer {
     private final FkPI fkpi;
     private final List<InetSocketAddress> loggedInUsers = new ArrayList<>();
     private final PlayerStatus playerStatus = new PlayerStatus();
+    private final CommandsManager commandsManager = new CommandsManager();
 
     public WSServer(FkBoard plugin, InetSocketAddress address) {
         super(address);
         this.plugin = plugin;
-        this.fk = FkBoard.getPlugin(Fk.class);
+        this.fk = (Fk) Bukkit.getPluginManager().getPlugin("FallenKingdom");
+        assert this.fk != null;
         this.fkpi = this.fk.getFkPI();
     }
 
@@ -72,7 +75,7 @@ public class WSServer extends WebSocketServer {
         }
 
         plugin.getLogger().info("Got message: " + message);
-        receive(action, json);
+        commandsManager.executeCommand(plugin, fkpi, this, conn, action, json);
     }
 
     @Override
@@ -85,48 +88,7 @@ public class WSServer extends WebSocketServer {
         plugin.getLogger().info("Starting websocket server");
     }
 
-    private void receive(String action, JsonObject json) {
-        switch (action.toLowerCase()) {
-            case "move":
-                if (!json.has("player") || !json.has("team")) {
-                    return;
-                }
-                String player = json.get("player").getAsString();
-                String team = json.get("team").getAsString();
-                if (fkpi.getTeamManager().getPlayerTeam(player) != null) {
-                    fkpi.getTeamManager().removePlayerOfHisTeam(player);
-                }
-                if (!team.equals("__noteam")) {
-                    fkpi.getTeamManager().addPlayer(player, team);
-                }
-                runSync(task -> fk.getScoreboardManager().recreateAllScoreboards());
-                break;
-            case "insert team":
-                if (!json.has("team")) {
-                    return;
-                }
-                fkpi.getTeamManager().createTeam(json.get("team").getAsString());
-                runSync(task -> fk.getScoreboardManager().recreateAllScoreboards());
-                break;
-            case "change team name":
-                if (!json.has("previous") || !json.has("newName")) {
-                    return;
-                }
-                ITeam team_ = fkpi.getTeamManager().getTeam(json.get("previous").getAsString());
-                team_.setName(json.get("newName").getAsString());
-                runSync(task -> fk.getScoreboardManager().recreateAllScoreboards());
-                break;
-            case "delete team":
-                if (!json.has("team")) {
-                    return;
-                }
-                fkpi.getTeamManager().removeTeam(json.get("team").getAsString());
-                runSync(task -> fk.getScoreboardManager().recreateAllScoreboards());
-                break;
-        }
-    }
-
-    private void runSync(Consumer<BukkitTask> task) {
+    public void runSync(Consumer<BukkitTask> task) {
         plugin.getServer().getScheduler().runTaskLater(plugin, task, 1L);
     }
 
@@ -140,5 +102,9 @@ public class WSServer extends WebSocketServer {
 
     public PlayerStatus getPlayerStatus() {
         return playerStatus;
+    }
+
+    public Fk getFk() {
+        return fk;
     }
 }
