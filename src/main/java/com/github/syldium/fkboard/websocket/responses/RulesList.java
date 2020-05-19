@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.rules.RuleValue;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +25,11 @@ public class RulesList implements Response {
             } catch (IllegalArgumentException ignored) {
 
             }
-            object.addProperty("value", rule.getValue().toString());
+            if (rule.getValue() instanceof RuleValue) {
+                object.add("value", ((RuleValue) rule.getValue()).toJSON());
+            } else {
+                object.addProperty("value", rule.getValue().toString());
+            }
             return object;
         }).collect(Collectors.toList())).getAsJsonArray();
     }

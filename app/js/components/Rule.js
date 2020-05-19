@@ -1,8 +1,9 @@
 export class Rule extends HTMLElement
 {
-    constructor(name, value, help)
+    constructor(name, value, help, blocksList)
     {
         super();
+        this.blocksList = blocksList;
         this.dataset.name = name;
         this.name = name;
         const label = document.createElement('label');
@@ -15,6 +16,10 @@ export class Rule extends HTMLElement
         this.appendChild(document.createTextNode(' : '));
 
         this.input = document.createElement('input');
+        if (name === 'AllowedBlocks') {
+            this.input = document.createElement('select');
+            this.input.multiple = true;
+        }
         this.input.id = name;
         this.value = value;
         this.appendChild(this.input);
@@ -31,14 +36,17 @@ export class Rule extends HTMLElement
             return this.input.checked ? 'true' : 'false';
         }
         if (this.input instanceof Choices) {
-            return this.input.getValue(true).join(',');
+            return this.input.getValue(true);
+        }
+        if (this.input === 'DayDuration') {
+            return this.input.value * 1200;
         }
         return this.input.value;
     }
 
-    updateValue(value)
+    async updateValue(value)
     {
-        value = this.getMainValue(value);
+        value = Rule.getMainValue(this.name, value);
         if (value == 'true' || value == 'false') {
             this.input.type = 'checkbox';
             this.input.checked = value == 'true';
@@ -48,13 +56,18 @@ export class Rule extends HTMLElement
                 this.input = new Choices(this.input, {
                     removeItems: true,
                     removeItemButton: true,
-                    addItemText: (value) => {
-                        return `Appuyez sur Entrée pour ajouter<br><b>"${value}"</b>`;
-                    }
+                    duplicateItemsAllowed: false
                 });
-            } else {
+                if (this.name === 'AllowedBlocks') {
+                    this.input.setChoices(this.blocksList.filter(b => b.boundingBox !== 'empty').map(b => {return {label: b.displayName, value: b.name}}));
+                }
+            } else if (this.name === 'DisabledPotions') {
                 this.input.clearStore();
                 this.input.setValue(value);
+            }
+            if (this.name === 'AllowedBlocks') {
+                this.input.removeActiveItems();
+                this.input.setChoiceByValue(value.map(b => b.toLowerCase()));
             }
         } else if (isNaN(value)) {
             this.input.type = 'text';
@@ -62,17 +75,19 @@ export class Rule extends HTMLElement
         } else {
             this.input.type = 'number';
             this.input.value = value;
+            this.input.min = this.name.indexOf('limit') > -1 ? 0 : 1;
         }
         this.actual = value;
     }
 
     static scoreOf(json)
     {
+        const value = Rule.getMainValue(json.name, json.value);
         let score = 0;
-        if (json.value == 'true' || json.value == 'false') {
+        if (value == 'true' || value == 'false') {
             score += 5;
         }
-        if (!isNaN(json.value)) {
+        if (!isNaN(value)) {
             score += 1;
         }
         if (json.name.indexOf('Cap') > -1) {
@@ -84,22 +99,17 @@ export class Rule extends HTMLElement
         return score;
     }
 
-    getMainValue(value)
+    static getMainValue(name, value)
     {
-        switch (this.name) {
-            case 'AllowedBlocks':
-                return value.replace(/Blocks\[(.*)\]/, '$1').split(',');
+        switch (name) {
             case 'ChargedCreepers':
-                return value.replace(/\[([0-9]+), ([0-9]+), ([0-9]+)\]/, '$1 $2 $3');
+                return Object.values(value).join(' ');
+            case 'DayDuration':
+                return value / 1200;
             case 'DisabledPotions':
-                return value.replace(/\[(.*)\]/, '$1')
-                    .split('], ')
-                    .map(e => {
-                        const part = e.split(',')[0];
-                        return part.substring(part.indexOf('=') + 1);
-                    });
+                return value.map(p => p.type);
             case 'PlaceBlockInCave':
-                return value.split('(')[0];
+                return value.active;
             default:
                 return value;
         }

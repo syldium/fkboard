@@ -1,6 +1,7 @@
 import { DataBridge } from "./DataBridge.js";
 import { Team } from "./components/Team.js";
 import { Rule } from "./components/Rule.js";
+import { getBlocksList } from "./BlocksList.js";
 
 export class FkEditor
 {
@@ -42,7 +43,6 @@ export class FkEditor
                 alert('Mot de passe incorrect');
             }
         });
-        this.dataBridge.addReceiver(200, () => this.dataBridge.askRulesList());
     }
 
     /**
@@ -77,10 +77,11 @@ export class FkEditor
         }
     }
 
-    loadRules(json)
+    async loadRules(json)
     {
-        Object.values(json.rules).sort((r1, r2) => Rule.scoreOf(r2) - Rule.scoreOf(r1)).forEach(rule_ => {
-            const element = new Rule(rule_.name, rule_.value, rule_.help);
+        const blocks = await getBlocksList(this.dataBridge);
+        Object.values(json.rules).sort((r1, r2) => Rule.scoreOf(r2) - Rule.scoreOf(r1)).forEach((rule_, i, rules) => {
+            const element = new Rule(rule_.name, rule_.value, rule_.help, blocks);
             element.addInputListener(this.modifiedRules, () => {
                 if (this.modifiedRules.length > 0) {
                     this.saveButton.classList.remove('invisible');
@@ -88,7 +89,15 @@ export class FkEditor
                     this.saveButton.classList.add('invisible');
                 }
             });
-            this.rulesDiv.firstChild.appendChild(element);
+            if (i > 0) {
+                if (Rule.scoreOf(rules[i - 1]) !== Rule.scoreOf(rule_)) {
+                    this.rulesDiv.lastChild.appendChild(document.createElement('hr'));
+                    this.rulesDiv.lastChild.appendChild(document.createElement('div'));
+                }
+            } else  {
+                this.rulesDiv.lastChild.appendChild(document.createElement('div'));
+            }
+            this.rulesDiv.lastChild.lastChild.appendChild(element);
         });
         this.saveButton = document.createElement('button')
         this.saveButton.appendChild(document.createTextNode('Enregistrer'));

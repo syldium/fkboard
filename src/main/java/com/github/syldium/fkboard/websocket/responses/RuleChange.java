@@ -2,16 +2,21 @@ package com.github.syldium.fkboard.websocket.responses;
 
 import com.google.gson.JsonObject;
 import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.rules.RuleValue;
 import org.jetbrains.annotations.NotNull;
 
 public class RuleChange implements Response {
 
-    private final String rule;
-    private final String value;
+    private final JsonObject rule;
 
     public <T> RuleChange(@NotNull Rule<T> rule, @NotNull T value) {
-        this.rule = rule.getName();
-        this.value = value.toString();
+        this.rule = new JsonObject();
+        this.rule.addProperty("rule", rule.getName());
+        if (value instanceof RuleValue) {
+            this.rule.add("value", ((RuleValue) value).toJSON());
+        } else {
+            this.rule.addProperty("value", value.toString());
+        }
     }
 
     @Override
@@ -21,10 +26,7 @@ public class RuleChange implements Response {
 
     @Override
     public @NotNull String toJSON() {
-        JsonObject object = new JsonObject();
-        object.addProperty("code", getStatusCode());
-        object.addProperty("rule", rule);
-        object.addProperty("value", value);
-        return object.toString();
+        rule.addProperty("code", getStatusCode());
+        return rule.toString();
     }
 }

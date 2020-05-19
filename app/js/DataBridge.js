@@ -12,7 +12,12 @@ export class DataBridge
         this.ws.onerror = () => alert('Impossible de se connecter au serveur !');
         this.ws.onopen = () => this.login(password);
         this.ws.onmessage = (message) => this.onreceive(JSON.parse(message.data));
-        this.receivers = {};
+        this.receivers = {
+            999: (json) => {
+                this.serverVersion = json.serverVersion;
+                this.askRulesList();
+            }
+        };
         this.authSent = false;
     }
 

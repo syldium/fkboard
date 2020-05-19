@@ -1,3 +1,5 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/syldium/fkboard/badge)](https://www.codefactor.io/repository/github/syldium/fkboard) ![Java CI with Maven](https://github.com/syldium/fkboard/workflows/Java%20CI%20with%20Maven/badge.svg)
+
 FkBoard
 =======
 Ce projet a pour but de fournir une interface dynamique de configuration web pour le plugin Minecraft [FallenKingdom](https://github.com/Etrenak/FallenKingdom).
@@ -12,10 +14,12 @@ Road map
 --------
 - [x] Affichage des joueurs connectés
 - [ ] CRUD des équipes (WIP)
-- [ ] Gestion des règles
+- [x] Gestion des règles
 
 Crédits
 --------
+- [jshjohnson/Choices](https://github.com/jshjohnson/Choices) sous license [MIT](https://github.com/jshjohnson/Choices/blob/master/LICENSE)
+- [PrismarineJS/minecraft-data](https://github.com/PrismarineJS/minecraft-data) sous license principale MIT
 - [Zondicons](https://www.zondicons.com/) sous license [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) par Steve Schoger ([Twitter](https://twitter.com/steveschoger)-[Dribbble](https://dribbble.com/steveschoger))
 
 Inspirations

@@ -2,6 +2,8 @@ package com.github.syldium.fkboard.websocket.commands;
 
 import com.github.syldium.fkboard.FkBoard;
 import com.github.syldium.fkboard.websocket.WSServer;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
 import fr.devsylone.fallenkingdom.commands.rules.FkRuleCommand;
@@ -36,16 +38,22 @@ class EditRuleCommand extends WSCommand {
 
         switch (rule.getName()) {
             case "AllowedBlocks":
+                if (!json.get("value").isJsonArray()) {
+                    return false;
+                }
                 AllowedBlocks allowedBlocks = fkpi.getRulesManager().getRule(Rule.ALLOWED_BLOCKS);
                 allowedBlocks.getValue().clear();
-                for (BlockDescription bd : parseAllowedBlocks(json.get("value").getAsString())) {
+                for (BlockDescription bd : parseAllowedBlocks(json.get("value").getAsJsonArray())) {
                     allowedBlocks.add(bd);
                 }
                 return true;
             case "DisabledPotions":
+                if (!json.get("value").isJsonArray()) {
+                    return false;
+                }
                 DisabledPotions disabledPotions = fkpi.getRulesManager().getRule(Rule.DISABLED_POTIONS);
                 //disabledPotions.getValue().clear();
-                for (XPotionData potion : parseDisabledPotions(json.get("value").getAsString())) {
+                for (XPotionData potion : parseDisabledPotions(json.get("value").getAsJsonArray())) {
                     disabledPotions.disablePotion(potion);
                 }
                 return true;
@@ -67,10 +75,10 @@ class EditRuleCommand extends WSCommand {
         }
     }
 
-    private List<BlockDescription> parseAllowedBlocks(String value) {
+    private List<BlockDescription> parseAllowedBlocks(JsonArray value) {
         List<BlockDescription> allowedBlocks = new ArrayList<>();
-        for (String block : value.split(",")) {
-            BlockDescription bd = new BlockDescription(block);
+        for (JsonElement block : value) {
+            BlockDescription bd = new BlockDescription(block.getAsString());
             if (Material.matchMaterial(bd.getBlockName()) != null) {
                 allowedBlocks.add(bd);
             }
@@ -78,11 +86,11 @@ class EditRuleCommand extends WSCommand {
         return allowedBlocks;
     }
 
-    private List<XPotionData> parseDisabledPotions(String value) {
+    private List<XPotionData> parseDisabledPotions(JsonArray value) {
         List<XPotionData> disabledPotions = new ArrayList<>();
-        for (String potion : value.split(",")) {
+        for (JsonElement potion : value) {
             try {
-                disabledPotions.add(new XPotionData(PotionType.valueOf(potion), false, false));
+                disabledPotions.add(new XPotionData(PotionType.valueOf(potion.getAsString()), false, false));
             } catch (IllegalArgumentException ignored) {
 
             }

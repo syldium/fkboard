@@ -46,12 +46,12 @@ body {
     margin-right: 16px;
 }
 input:not([type=submit]):not(.choices__input) {
-	background-color: #eee;
-	border: none;
-	padding: 12px 15px;
-	margin-bottom: 16px;
+    background-color: #eee;
+    border: none;
+    padding: 12px 15px;
+    margin-bottom: 16px;
     border-bottom: 1px solid transparent;
-    transition:  all .3s linear; 
+    transition:  all .3s linear;
 }
 form input:not([type=submit]) {
     width: 100%;
@@ -60,10 +60,10 @@ form input:not([type=submit]) {
     display: inline-block;
 }
 .choices__inner {
-    width: 225px !important;
+    width: 400px !important;
 }
 input:focus {
-    border-bottom: solid 1px var(--primary-color); 
+    border-bottom: solid 1px var(--primary-color);
     outline: 0;
     box-shadow: 0 2px 6px -8px rgba(var(--primary-color), .45);
 }
@@ -206,13 +206,16 @@ i.remove {
 #rules {
     padding: 24px;
 }
-#rules .rules-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 16px;
+#rules .rules-list > div {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 70vw;
 }
 fk-rule {
-    min-width: 200px;
+    min-width: calc(70vw / 3);
+}
+.rules-list div:last-child fk-rule {
+    min-width: calc(70vw / 2);
 }
 fk-rule label[data-info] {
     border-bottom: dashed 1px rgba(0,0,0,0.3);

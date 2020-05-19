@@ -5,6 +5,7 @@ import com.github.syldium.fkboard.status.PlayerStatus;
 import com.github.syldium.fkboard.websocket.commands.CommandsManager;
 import com.github.syldium.fkboard.websocket.responses.LoginRequired;
 import com.github.syldium.fkboard.websocket.responses.Response;
+import com.github.syldium.fkboard.websocket.responses.ServerInfo;
 import com.github.syldium.fkboard.websocket.responses.TeamsList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -67,6 +68,7 @@ public class WSServer extends WebSocketServer {
                 loggedInUsers.add(conn.getRemoteSocketAddress());
                 plugin.getLogger().info(conn.getRemoteSocketAddress() + " logged in.");
                 conn.send(new LoginRequired(true).toJSON());
+                conn.send(new ServerInfo(plugin).toJSON());
                 conn.send(new TeamsList(FkPI.getInstance().getTeamManager().getTeams(), playerStatus).toJSON());
             } else {
                 conn.send(new LoginRequired(false).toJSON());
