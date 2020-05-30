@@ -62,7 +62,18 @@ export class Team extends HTMLElement
 
     addDataActions(dataBridge)
     {
-        this.lastChild.appendChild(this.buildActionElement('add', () => {
+        if (this.name === '__noteam') {
+            this.lastChild.appendChild(this.buildActionElement('add', () => {
+                const team = prompt('Créer une équipe...');
+                if (team === null || team === '') {
+                    return;
+                }
+                dataBridge.sendTeamInsertion(team);
+            }));
+            return;
+        }
+
+        this.lastChild.appendChild(this.buildActionElement('user-add', () => {
             const player = prompt('Ajouter un joueur...');
             if (player === null || player === '') {
                 return;

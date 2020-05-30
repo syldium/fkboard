@@ -13,7 +13,7 @@ Ce dépôt est divisé en deux parties :
 Road map
 --------
 - [x] Affichage des joueurs connectés
-- [ ] CRUD des équipes (WIP)
+- [x] CRUD des équipes
 - [x] Gestion des règles
 
 Crédits

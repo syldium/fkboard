@@ -47,9 +47,9 @@ export class Rule extends HTMLElement
     async updateValue(value)
     {
         value = Rule.getMainValue(this.name, value);
-        if (value == 'true' || value == 'false') {
+        if (value === true || value === false) {
             this.input.type = 'checkbox';
-            this.input.checked = value == 'true';
+            this.input.checked = value;
         } else if (this.name === 'AllowedBlocks' || this.name === 'DisabledPotions') {
             this.input.value = value;
             if (typeof this.actual === 'undefined') {
@@ -84,10 +84,10 @@ export class Rule extends HTMLElement
     {
         const value = Rule.getMainValue(json.name, json.value);
         let score = 0;
-        if (value == 'true' || value == 'false') {
+        if (value === true || value === false) {
             score += 5;
         }
-        if (!isNaN(value)) {
+        if (value.length > 0 && !isNaN(value)) {
             score += 1;
         }
         if (json.name.indexOf('Cap') > -1) {
@@ -111,6 +111,9 @@ export class Rule extends HTMLElement
             case 'PlaceBlockInCave':
                 return value.active;
             default:
+                if (value === 'true' || value === 'false') {
+                    return value === 'true';
+                }
                 return value;
         }
     }

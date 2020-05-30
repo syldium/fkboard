@@ -19,7 +19,7 @@ body {
 .container {
 	background-color: #fff;
 	border-radius: 10px;
-	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 .not-supported {
     width: 400px;
@@ -82,22 +82,29 @@ form input[type=submit] {
 	background-color: var(--focus-color);
 }
 
-h2, button {
-    margin-left: 32px;
+/* Editor */
+.editor {
+    width: 1028px;
+    max-width: calc(100% - 20px);
+    padding-top: 8px;
+    padding-bottom: 32px;
 }
-
+.editor > * {
+    padding-left: 40px;
+    padding-right: 40px;
+}
 /* Teams list */
-#teams {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+.teams {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    column-gap: 4rem;
+    row-gap: 1.5rem;
 }
 fk-team {
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0.125);
     border-radius: 0.25rem;
-    margin: 1.5rem 4rem;
-    min-width: 150px;
+    min-height: 130px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -193,7 +200,7 @@ i {
     cursor: pointer;
 }
 i.add {
-    background-image: url(img/user-add.svg);
+    background-image: url(img/add-outline.svg);
 }
 i.edit {
     background-image: url(img/edit-pencil.svg);
@@ -201,21 +208,18 @@ i.edit {
 i.remove {
     background-image: url(img/trash.svg);
 }
+i.user-add {
+    background-image: url(img/user-add.svg);
+}
 
 /* Rules */
-#rules {
-    padding: 24px;
+.rules > div {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 2rem;
 }
-#rules .rules-list > div {
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 70vw;
-}
-fk-rule {
-    min-width: calc(70vw / 3);
-}
-.rules-list div:last-child fk-rule {
-    min-width: calc(70vw / 2);
+.rules > div:last-child {
+    grid-template-columns: repeat(2, 1fr);
 }
 fk-rule label[data-info] {
     border-bottom: dashed 1px rgba(0,0,0,0.3);
@@ -254,10 +258,10 @@ fk-rule label[data-info]:hover::after,
 fk-rule label[data-info]:hover::before {opacity: 1;}
 fk-rule label[data-info]:hover::after {top: 30px;}
 fk-rule label[data-info]:hover::before {top: 20px;}
-#rules input[type=number] {
+.rules input[type=number] {
     width: 70px;
 }
-#rules #DayDuration {
+.rules #DayDuration {
     width: 100px;
 }
 
@@ -266,7 +270,7 @@ fk-rule label[data-info]:hover::before {top: 20px;}
     display: none !important;
 }
 .save-btn {
+    margin-top: 16px;
     margin-left: auto;
-    margin-right: 64px;
     display: block;
 }

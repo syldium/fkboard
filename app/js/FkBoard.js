@@ -6,22 +6,26 @@ import { getBlocksList } from "./BlocksList.js";
 export class FkEditor
 {
     /**
-     * @param {HTMLFormElement} form 
+     * @param {HTMLElement} connection 
+     * @param {HTMLElement} editor
      */
-    constructor(form)
+    constructor(connection, editor)
     {
-        this.form = form;
-        form.onsubmit = () => {
+        this.connection = connection;
+        connection.lastElementChild.onsubmit = () => {
             const adress = document.getElementById('adress').value;
             const port = document.getElementById('port').value;
             const password = document.getElementById('pass').value;
             this.connect(adress, port, password);
             return false;
         };
-        this.teamsDiv = document.getElementById('teams');
-        this.rulesDiv = document.getElementById('rules');
-        this.players = {};
+        this.editor = editor;
+        editor.setAttribute('hidden', 'hidden');
+
+        this.players = {}; // References to players elements
         this.modifiedRules = [];
+        this.teamsDiv = editor.querySelector('.teams');
+        this.rulesDiv = editor.querySelector('.rules');
     }
 
     /**
@@ -53,14 +57,9 @@ export class FkEditor
     loadTeams(json)
     {
         // Hide connection form
-        if (this.form.style.display !== 'none') {
-            this.form.style.display = 'none';
-            const h2Teams = document.createElement('h2');
-            h2Teams.appendChild(document.createTextNode('Équipes'));
-            this.teamsDiv.parentNode.insertBefore(h2Teams, this.teamsDiv);
-            const h2Rules = document.createElement('h2');
-            h2Rules.appendChild(document.createTextNode('Règles'));
-            this.rulesDiv.parentNode.insertBefore(h2Rules, this.rulesDiv);
+        if (this.connection.getAttribute('hidden') !== 'hidden') {
+            this.connection.setAttribute('hidden', 'hidden');
+            this.editor.removeAttribute('hidden');
         }
         // Remove previous nodes, except __noteam
         Array.from(this.teamsDiv.children)
@@ -91,13 +90,13 @@ export class FkEditor
             });
             if (i > 0) {
                 if (Rule.scoreOf(rules[i - 1]) !== Rule.scoreOf(rule_)) {
-                    this.rulesDiv.lastChild.appendChild(document.createElement('hr'));
-                    this.rulesDiv.lastChild.appendChild(document.createElement('div'));
+                    this.rulesDiv.appendChild(document.createElement('hr'));
+                    this.rulesDiv.appendChild(document.createElement('div'));
                 }
             } else  {
-                this.rulesDiv.lastChild.appendChild(document.createElement('div'));
+                this.rulesDiv.appendChild(document.createElement('div'));
             }
-            this.rulesDiv.lastChild.lastChild.appendChild(element);
+            this.rulesDiv.lastChild.appendChild(element);
         });
         this.saveButton = document.createElement('button')
         this.saveButton.appendChild(document.createTextNode('Enregistrer'));
@@ -189,9 +188,7 @@ export class FkEditor
         const teamElement = new Team(teamName, chatcolor, players);
         teamElement.players.forEach(player => this.players[player.innerText] = player);
         teamElement.addEventListener('player-move', e => this.dataBridge.sendTeamMovement(e.detail.player, e.detail.team));
-        if (teamName !== '__noteam') {
-            teamElement.addDataActions(this.dataBridge);
-        }
+        teamElement.addDataActions(this.dataBridge);
         return teamElement;
     }
 }
