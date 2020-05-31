@@ -13,10 +13,10 @@ export class FkEditor
     {
         this.connection = connection;
         connection.lastElementChild.onsubmit = () => {
-            const adress = document.getElementById('adress').value;
+            const address = document.getElementById('address').value;
             const port = document.getElementById('port').value;
             const password = document.getElementById('pass').value;
-            this.connect(adress, port, password);
+            this.connect(address, port, password);
             return false;
         };
         this.editor = editor;
