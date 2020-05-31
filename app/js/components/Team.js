@@ -1,3 +1,5 @@
+import { TextModal } from "./Modal.js";
+
 export class Team extends HTMLElement
 {
     constructor(name, chatcolor = false, players = [])
@@ -64,30 +66,31 @@ export class Team extends HTMLElement
     {
         if (this.name === '__noteam') {
             this.lastChild.appendChild(this.buildActionElement('add', () => {
-                const team = prompt('Créer une équipe...');
-                if (team === null || team === '') {
-                    return;
-                }
-                dataBridge.sendTeamInsertion(team);
+                document.querySelector('body').appendChild(new TextModal({
+                    text: 'Créer une équipe...',
+                    placeholder: 'Nom de l\'équipe',
+                    callback: (team) => dataBridge.sendTeamInsertion(team)
+                }));
             }));
             return;
         }
 
         this.lastChild.appendChild(this.buildActionElement('user-add', () => {
-            const player = prompt('Ajouter un joueur...');
-            if (player === null || player === '') {
-                return;
-            }
-            dataBridge.sendTeamMovement(player, this.name);
+            document.querySelector('body').appendChild(new TextModal({
+                text: 'Ajouter un joueur...',
+                placeholder: 'Nom du joueur',
+                callback: (player) => dataBridge.sendTeamMovement(player, this.name)
+            }));
         }));
         this.lastChild.appendChild(this.buildActionElement('edit', () => {
-            const name = prompt('Changer le nom de l\'équipe....');
-            if (name === null || name === '') {
-                return;
-            }
-            dataBridge.sendTeamNameChange(this.name, name)
+            document.querySelector('body').appendChild(new TextModal({
+                text: 'Changer le nom de l\'équipe...',
+                placeholder: 'Nom de l\'équipe',
+                defaultValue: this.name,
+                callback: (name) => dataBridge.sendTeamNameChange(this.name, name)
+            }));
         }));
-        this.lastChild.appendChild(this.buildActionElement('remove', () => {
+        this.lastChild.appendChild(this.buildActionElement('remove', () => {;
             if (confirm('Souhaitez-vous vraiment supprimer cette équipe ?')) {
                 dataBridge.sendTeamSuppression(this.name);
             }
