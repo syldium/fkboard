@@ -2,6 +2,7 @@ import { DataBridge } from "./DataBridge.js";
 import { Team } from "./components/Team.js";
 import { Rule } from "./components/Rule.js";
 import { getBlocksList } from "./BlocksList.js";
+import { ScoreboardModal } from "./components/Modal.js";
 
 export class FkEditor
 {
@@ -22,6 +23,7 @@ export class FkEditor
         this.editor = editor;
         editor.setAttribute('hidden', 'hidden');
 
+        this.scoreboardModal = null;
         this.players = {}; // References to players elements
         this.modifiedRules = [];
         this.teamsDiv = editor.querySelector('.teams');
@@ -42,10 +44,16 @@ export class FkEditor
         this.dataBridge.addReceiver(1001, this.playerMove.bind(this));
         this.dataBridge.addReceiver(1002, this.loadRules.bind(this));
         this.dataBridge.addReceiver(1003, this.changeRule.bind(this));
+        this.dataBridge.addReceiver(1004, this.editScoreboard.bind(this));
         this.dataBridge.addReceiver(401, () => {
             if (this.dataBridge.authSent) {
                 alert('Mot de passe incorrect');
             }
+        });
+        this.dataBridge.addReceiver(200, () => {
+            document.querySelector('.scoreboard-btn').addEventListener('click', () => {
+                this.dataBridge.fetchScoreboardContent();
+            });
         });
     }
 
@@ -141,6 +149,21 @@ export class FkEditor
         } else {
             this.saveButton.classList.add('invisible');
         }
+    }
+
+    editScoreboard(json)
+    {
+        if (this.scoreboardModal !== null && this.scoreboardModal.parentNode !== null) {
+            this.scoreboardModal.setLines(json.lines);
+            return;
+        }
+        this.scoreboardModal = new ScoreboardModal({
+            placeholders: json.placeholders,
+            lines: json.lines,
+            text: 'Éditer le scoreboard',
+            callback: (lines) => this.dataBridge.updateScoreboard(lines)
+        });
+        document.querySelector('body').appendChild(this.scoreboardModal);
     }
 
     /**

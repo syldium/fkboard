@@ -15,11 +15,13 @@ Road map
 - [x] Affichage des joueurs connectés
 - [x] CRUD des équipes
 - [x] Gestion des règles
+- [ ] Modification du scoreboard (WIP instable)
 
 Crédits
 --------
 - [jshjohnson/Choices](https://github.com/jshjohnson/Choices) sous license [MIT](https://github.com/jshjohnson/Choices/blob/master/LICENSE)
 - [PrismarineJS/minecraft-data](https://github.com/PrismarineJS/minecraft-data) sous license principale MIT
+- [Minecraftia](https://www.dafont.com/fr/minecraftia.font)
 - [Zondicons](https://www.zondicons.com/) sous license [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) par Steve Schoger ([Twitter](https://twitter.com/steveschoger)-[Dribbble](https://dribbble.com/steveschoger))
 
 Inspirations

@@ -18,9 +18,11 @@ public class CommandsManager {
                 .add(new ChangeTeamNameCommand())
                 .add(new DeleteTeamCommand())
                 .add(new EditRuleCommand())
+                .add(new FetchScoreboardCommand())
                 .add(new InsertTeamCommand())
                 .add(new ListRulesCommand())
                 .add(new MoveCommand())
+                .add(new UpdateScoreboardCommand())
                 .build();
     }
 
@@ -30,7 +32,7 @@ public class CommandsManager {
                 .findFirst()
                 .orElse(null);
 
-        if (cmd == null) {
+        if (cmd == null || !cmd.hasRequiredJsonKeys(json)) {
             return false;
         }
         boolean result = cmd.execute(plugin, fkpi, wsServer, sender, json);

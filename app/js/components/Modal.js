@@ -1,3 +1,5 @@
+import { RichTextEditor } from "./RichTextEditor.js";
+
 class Modal extends HTMLElement
 {
     constructor(text)
@@ -48,7 +50,29 @@ class Modal extends HTMLElement
     }
 }
 
-export class TextModal extends Modal
+class BaseModal extends Modal
+{
+    constructor(text)
+    {
+        super(text);
+        this.text = text;
+        this.classList.add('modal');
+        this.setAttribute('role', 'dialog');
+
+        this.close = this.close.bind(this);
+    }
+
+    connectedCallback()
+    {
+        super.connectedCallback();
+        const action = document.createElement('button');
+        action.append(typeof this.action === 'undefined' ? 'Valider' : this.action);
+        action.classList.add('btn-primary');
+        this.actions.appendChild(action);
+    }
+}
+
+export class TextModal extends BaseModal
 {
     constructor({text, placeholder, defaultValue, action, callback})
     {
@@ -79,12 +103,7 @@ export class TextModal extends Modal
                 this.submit(input.value);
             }
         });
-
-        const action = document.createElement('button');
-        action.append(typeof this.action === 'undefined' ? 'Valider' : this.action);
-        action.classList.add('btn-primary');
-        action.addEventListener('click', () => this.submit(input.value));
-        this.actions.appendChild(action);
+        this.actions.lastChild.addEventListener('click', (e) => this.submit(input.value));
     }
 
     submit(value)
@@ -96,4 +115,39 @@ export class TextModal extends Modal
     }
 }
 
+export class ScoreboardModal extends BaseModal
+{
+    constructor({text, placeholders, lines, callback})
+    {
+        super(text);
+        this.placeholders = placeholders;
+        this.lines = lines;
+        this.callback = callback;
+    }
+
+    connectedCallback()
+    {
+        super.connectedCallback();
+        this.editor = new RichTextEditor(this.lines);
+        this.firstChild.insertBefore(this.editor, this.actions);
+        this.actions.lastChild.addEventListener('click', () => this.submit());
+    }
+
+    setLines(lines)
+    {
+        this.lines = lines;
+        this.editor.setLines(lines);
+    }
+
+    submit()
+    {
+        const text = this.editor.toLegacyText();
+        if (text.length > 0) {
+            this.callback(text);
+        }
+        this.close();
+    }
+}
+
 customElements.define('text-modal', TextModal);
+customElements.define('scoreboard-modal', ScoreboardModal);

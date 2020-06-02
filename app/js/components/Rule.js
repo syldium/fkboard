@@ -75,7 +75,7 @@ export class Rule extends HTMLElement
         } else {
             this.input.type = 'number';
             this.input.value = value;
-            this.input.min = this.name.indexOf('limit') > -1 ? 0 : 1;
+            this.input.min = this.name.toLowerCase().indexOf('limit') > -1 ? 0 : 1;
         }
         this.actual = value;
     }
