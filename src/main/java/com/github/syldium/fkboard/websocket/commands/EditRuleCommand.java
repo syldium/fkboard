@@ -8,7 +8,9 @@ import com.google.gson.JsonObject;
 import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
 import fr.devsylone.fallenkingdom.commands.rules.FkRuleCommand;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
+import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.rules.AllowedBlocks;
 import fr.devsylone.fkpi.rules.DisabledPotions;
 import fr.devsylone.fkpi.rules.Rule;
@@ -44,15 +46,16 @@ class EditRuleCommand extends WSCommand {
                 AllowedBlocks allowedBlocks = fkpi.getRulesManager().getRule(Rule.ALLOWED_BLOCKS);
                 allowedBlocks.getValue().clear();
                 for (BlockDescription bd : parseAllowedBlocks(json.get("value").getAsJsonArray())) {
-                    allowedBlocks.add(bd);
+                    allowedBlocks.getValue().add(bd);
                 }
+                Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.ALLOWED_BLOCKS, allowedBlocks));
                 return true;
             case "DisabledPotions":
                 if (!json.get("value").isJsonArray()) {
                     return false;
                 }
                 DisabledPotions disabledPotions = fkpi.getRulesManager().getRule(Rule.DISABLED_POTIONS);
-                //disabledPotions.getValue().clear();
+                disabledPotions.getValue().clear();
                 for (XPotionData potion : parseDisabledPotions(json.get("value").getAsJsonArray())) {
                     disabledPotions.disablePotion(potion);
                 }
@@ -70,6 +73,8 @@ class EditRuleCommand extends WSCommand {
                     c.execute(wsServer.getFk(), Bukkit.getConsoleSender(), args, "FkBoard");
                 } catch (ArgumentParseException e) {
                     plugin.getLogger().warning("Invalid rule data sent by " + sender.getRemoteSocketAddress() + " (" + e.getMessage() + ")");
+                } catch (FkLightException e) {
+                    plugin.getLogger().warning("Cannot change " + rule.getName() + " rule (" + e.getMessage() + ")");
                 }
                 return true;
         }
