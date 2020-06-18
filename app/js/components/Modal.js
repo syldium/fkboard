@@ -103,7 +103,7 @@ export class TextModal extends BaseModal
                 this.submit(input.value);
             }
         });
-        this.actions.lastChild.addEventListener('click', (e) => this.submit(input.value));
+        this.actions.lastChild.addEventListener('click', () => this.submit(input.value));
     }
 
     submit(value)

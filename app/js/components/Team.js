@@ -90,7 +90,7 @@ export class Team extends HTMLElement
                 callback: (name) => dataBridge.sendTeamNameChange(this.name, name)
             }));
         }));
-        this.lastChild.appendChild(this.buildActionElement('remove', () => {;
+        this.lastChild.appendChild(this.buildActionElement('remove', () => {
             if (confirm('Souhaitez-vous vraiment supprimer cette équipe ?')) {
                 dataBridge.sendTeamSuppression(this.name);
             }

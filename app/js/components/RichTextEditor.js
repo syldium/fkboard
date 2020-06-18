@@ -47,7 +47,7 @@ export class RichTextEditor extends HTMLElement
             const select = document.createElement('button');
             select.classList.add('color-pick');
             select.style.backgroundColor = color;
-            select.addEventListener('click', (e) => {
+            select.addEventListener('click', () => {
                 // Create a surrounding span color
                 var span = document.createElement('span');
                 span.style.color = color;
@@ -63,7 +63,7 @@ export class RichTextEditor extends HTMLElement
         this.div.classList.add('scoreboard');
         this.div.spellcheck = false;
         this.div.setAttribute('contenteditable', 'true');
-        this.div.addEventListener('input', (e) => {
+        this.div.addEventListener('input', () => {
             // Make sure that no line has exceeded the maximum length
             const text = this.toLegacyText();
             let tooLong = false;
