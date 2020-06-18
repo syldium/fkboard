@@ -128,7 +128,7 @@ export class ScoreboardModal extends BaseModal
     connectedCallback()
     {
         super.connectedCallback();
-        this.editor = new RichTextEditor(this.lines);
+        this.editor = new RichTextEditor(this.lines, this.placeholders);
         this.firstChild.insertBefore(this.editor, this.actions);
         this.actions.lastChild.addEventListener('click', () => this.submit());
     }

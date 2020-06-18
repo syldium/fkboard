@@ -25,7 +25,7 @@ class UpdateScoreboardCommand extends WSCommand {
         for (JsonElement lineElement : json.get("lines").getAsJsonArray()) {
             String line = lineElement.getAsString();
             if (line.length() < 5) {
-                line = ScoreboardManager.randomFakeEmpty() + line;
+                line += ScoreboardManager.randomFakeEmpty();
             }
             if ((Version.VersionType.V1_13.isHigherOrEqual() && line.length() <= 64) || line.length() <= 32) {
                 wsServer.getFk().getScoreboardManager().getSidebar().add(line);

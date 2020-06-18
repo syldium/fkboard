@@ -223,6 +223,9 @@ li::after {
     font-size: 0.85em;
     white-space: nowrap;
 }
+.scoreboard div {
+    display: inline;
+}
 
 /* Actions */
 .actions {
@@ -260,19 +263,18 @@ i.user-add {
 .rules > div:last-child {
     grid-template-columns: repeat(2, 1fr);
 }
-fk-rule label[data-info] {
+label[data-info] {
     border-bottom: dashed 1px rgba(0, 0, 0, 0.3);
     cursor: help;
     position: relative;
 }
-fk-rule label[data-info]::after {
+label[data-info]::after {
     content: attr(data-info);
     display: inline;
     position: absolute;
     top: 22px;
     left: 0;
     opacity: 0;
-    width: 230px;
     font-size: 13px;
     font-weight: 700;
     line-height: 1.5em;
@@ -281,8 +283,9 @@ fk-rule label[data-info]::after {
     color: #fff;
     pointer-events: none; /* This prevents the box from apearing when hovered. */
     transition: opacity 250ms, top 250ms;
+    z-index: 10;
 }
-fk-rule label[data-info]::before {
+label[data-info]::before {
     content: "";
     display: block;
     position: absolute;
@@ -295,17 +298,17 @@ fk-rule label[data-info]::before {
     border-bottom-color: rgba(0, 0, 0, 0.9);
     transition: opacity 250ms, top 250ms;
 }
-fk-rule label[data-info]:hover {
+label[data-info]:hover {
     z-index: 2;
 } /* Keeps the info boxes on top of other elements */
-fk-rule label[data-info]:hover::after,
-fk-rule label[data-info]:hover::before {
+label[data-info]:hover::after,
+label[data-info]:hover::before {
     opacity: 1;
 }
-fk-rule label[data-info]:hover::after {
+label[data-info]:hover::after {
     top: 30px;
 }
-fk-rule label[data-info]:hover::before {
+label[data-info]:hover::before {
     top: 20px;
 }
 .rules input[type="number"] {
@@ -339,7 +342,6 @@ fk-rule label[data-info]:hover::before {
     animation: fadeIn 0.3s both;
 }
 .modal-wrapper {
-    overflow: auto;
     width: 400px;
     margin-top: 9%;
     max-width: calc(100vw - 24px);
