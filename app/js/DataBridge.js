@@ -104,7 +104,6 @@ export class DataBridge
     sendRuleChange(rule, value)
     {
         this.ws.send(JSON.stringify({ code: 2007, 'action': `EDIT RULE`, 'rule': rule, 'value': value }));
-        this.fetchScoreboardContent();
     }
 
     fetchScoreboardContent()
