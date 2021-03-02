@@ -41,6 +41,52 @@ body {
     align-items: baseline;
 }
 
+/*social-network*/
+div.social-network {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    height: 60px;
+    margin-top: 8px;
+    text-align: center;
+    vertical-align: middle;
+    text-decoration: none;
+}
+
+a.social-network {
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25), 0 5px 5px rgba(0, 0, 0, 0.22);
+    text-decoration: none;
+    padding-top: 12px;
+    height: 60px;
+}
+
+a.social-network > div {
+    vertical-align: middle;
+}
+
+.discord {
+    background-color: #7289da;
+}
+
+.wiki * {
+    margin: 3px;
+}
+
+.wiki {
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.wiki:active {
+    color: black;
+}
+
+a.wiki > div {
+    margin: 0 auto;
+    margin-top: -12px;
+}
+
 .not-supported {
     width: 400px;
     margin: 16px auto 8px;
@@ -55,7 +101,7 @@ h1 {
 }
 
 .connection {
-    height: 400px;
+    height: 475px;
 }
 
 .input-group {
