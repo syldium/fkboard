@@ -8,7 +8,7 @@ Fonctionnement
 --------------
 Ce dépôt est divisé en deux parties :
 - Un plugin à ajouter au plugin Fk de base, qui créé un serveur de *WebSockets* en parallèle au serveur Spigot/Paper.
-- Une interface web, accessible directement depuis [GitHub Pages](https://syldium.github.io/fkboard/app). Celle-ci permet la création d'une communication directe au serveur sur lequel le plugin est installé.
+- Une interface web, accessible directement depuis [GitHub Pages](https://daminos2836.github.io/fkboard/app). Celle-ci permet la création d'une communication directe au serveur sur lequel le plugin est installé.
 
 Road map
 --------
