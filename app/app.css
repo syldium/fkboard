@@ -79,7 +79,7 @@ a.social-network > div {
 }
 
 .wiki:active {
-    color: black;
+    color: inherit;
 }
 
 a.wiki > div {
