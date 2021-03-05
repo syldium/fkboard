@@ -1,14 +1,15 @@
 package com.github.syldium.fkboard;
 
-import com.github.syldium.fkboard.listeners.FallenKingdomListener;
-import com.github.syldium.fkboard.listeners.JoinLeftListener;
+import com.github.syldium.fkboard.listener.FallenKingdomListener;
+import com.github.syldium.fkboard.listener.JoinLeftListener;
 import com.github.syldium.fkboard.status.PlayerStatus;
 import com.github.syldium.fkboard.websocket.WSServer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 public final class FkBoard extends JavaPlugin {
 
@@ -22,7 +23,7 @@ public final class FkBoard extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JoinLeftListener(this), this);
         getServer().getPluginManager().registerEvents(new FallenKingdomListener(this), this);
 
-        InetSocketAddress address = new InetSocketAddress(Objects.requireNonNull(getConfig().getString("host", "0.0.0.0")), getConfig().getInt("port", 50000));
+        InetSocketAddress address = new InetSocketAddress(requireNonNull(getConfig().getString("host", "0.0.0.0")), getConfig().getInt("port", 50000));
         server = new WSServer(this, address);
         wsThread = new Thread(() -> server.run());
         wsThread.start();

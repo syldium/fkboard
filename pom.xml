@@ -59,10 +59,6 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -80,7 +76,7 @@
         <dependency>
             <groupId>com.github.Etrenak</groupId>
             <artifactId>FallenKingdom</artifactId>
-            <version>v2.20.0</version>
+            <version>v2.20.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- WebSocket server -->
@@ -93,15 +89,29 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>18.0.0</version>
+            <version>20.1.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- GSON (same as server version) -->
+        <!-- FastUtils -->
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.0</version>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>8.5.1</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- JUnit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- ClassGraph -->
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.8.102</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

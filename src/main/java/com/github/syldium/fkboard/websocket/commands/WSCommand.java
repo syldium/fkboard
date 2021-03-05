@@ -5,6 +5,7 @@ import com.github.syldium.fkboard.websocket.WSServer;
 import com.google.gson.JsonObject;
 import fr.devsylone.fkpi.FkPI;
 import org.java_websocket.WebSocket;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class WSCommand {
 
@@ -18,8 +19,8 @@ public abstract class WSCommand {
         this.requiredJsonKeys = requiredJsonKeys;
     }
 
-    public boolean hasRequiredJsonKeys(JsonObject json) {
-        for (String key : requiredJsonKeys) {
+    public boolean hasRequiredJsonKeys(@NotNull JsonObject json) {
+        for (String key : this.requiredJsonKeys) {
             if (!json.has(key)) {
                 return false;
             }

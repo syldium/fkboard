@@ -26,19 +26,20 @@ public class CommandsManager {
                 .build();
     }
 
-    public boolean executeCommand(FkBoard plugin, FkPI fkpi, WSServer wsServer, WebSocket sender, String action, JsonObject json) {
-        WSCommand cmd = commands.stream()
+    public void executeCommand(FkBoard plugin, FkPI fkpi, WSServer wsServer, WebSocket sender, String action, JsonObject json) {
+        WSCommand cmd = this.commands.stream()
                 .filter(node -> node.path.equalsIgnoreCase(action))
                 .findFirst()
                 .orElse(null);
 
         if (cmd == null || !cmd.hasRequiredJsonKeys(json)) {
-            return false;
+            return;
         }
-        boolean result = cmd.execute(plugin, fkpi, wsServer, sender, json);
-        if (result && cmd.needScoreboardReload) {
-            wsServer.runSync(p -> wsServer.getFk().getScoreboardManager().recreateAllScoreboards());
-        }
-        return result;
+        wsServer.runSync(p -> {
+            boolean result = cmd.execute(plugin, fkpi, wsServer, sender, json);
+            if (result && cmd.needScoreboardReload) {
+                wsServer.getFk().getScoreboardManager().recreateAllScoreboards();
+            }
+        });
     }
 }

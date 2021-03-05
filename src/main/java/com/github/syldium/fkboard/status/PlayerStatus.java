@@ -1,20 +1,19 @@
 package com.github.syldium.fkboard.status;
 
-import org.bukkit.Bukkit;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerStatus {
 
-    private final Map<String, Boolean> statutes = new ConcurrentHashMap<>();
+    private final Object2BooleanMap<String> statutes = Object2BooleanMaps.synchronize(new Object2BooleanOpenHashMap<>());
 
     public void update(@NotNull String playerName, boolean online) {
         statutes.put(playerName, online);
     }
 
     public boolean isPlayerOnline(@NotNull String playerName) {
-        return statutes.computeIfAbsent(playerName, k -> Bukkit.getPlayer(playerName) != null);
+        return statutes.getBoolean(playerName);
     }
 }

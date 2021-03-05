@@ -3,10 +3,11 @@ package com.github.syldium.fkboard.websocket;
 import com.github.syldium.fkboard.FkBoard;
 import com.github.syldium.fkboard.status.PlayerStatus;
 import com.github.syldium.fkboard.websocket.commands.CommandsManager;
-import com.github.syldium.fkboard.websocket.responses.LoginRequired;
-import com.github.syldium.fkboard.websocket.responses.Response;
-import com.github.syldium.fkboard.websocket.responses.ServerInfo;
-import com.github.syldium.fkboard.websocket.responses.TeamsList;
+import com.github.syldium.fkboard.response.InvalidLogin;
+import com.github.syldium.fkboard.response.Response;
+import com.github.syldium.fkboard.response.ServerInfo;
+import com.github.syldium.fkboard.response.TeamsList;
+import com.github.syldium.fkboard.response.serializer.ResponseSerializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -18,13 +19,14 @@ import org.bukkit.scheduler.BukkitTask;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class WSServer extends WebSocketServer {
+public final class WSServer extends WebSocketServer {
 
     private final FkBoard plugin;
     private final Fk fk;
@@ -32,6 +34,8 @@ public class WSServer extends WebSocketServer {
     private final List<InetSocketAddress> loggedInUsers = new ArrayList<>();
     private final PlayerStatus playerStatus = new PlayerStatus();
     private final CommandsManager commandsManager = new CommandsManager();
+    private final ResponseSerializer serializer = new ResponseSerializer(this.playerStatus::isPlayerOnline);
+    private final String serializedServerInfo;
 
     public WSServer(FkBoard plugin, InetSocketAddress address) {
         super(address);
@@ -39,18 +43,19 @@ public class WSServer extends WebSocketServer {
         this.fk = (Fk) Bukkit.getPluginManager().getPlugin("FallenKingdom");
         assert this.fk != null;
         this.fkpi = this.fk.getFkPI();
+        this.serializedServerInfo = this.serializer.serialize(new ServerInfo(plugin));
     }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        if (loggedInUsers.contains(conn.getRemoteSocketAddress())) {
-            plugin.getLogger().info("Resumed" + conn.getRemoteSocketAddress());
+        if (this.loggedInUsers.contains(conn.getRemoteSocketAddress())) {
+            this.plugin.getLogger().info("Resumed" + conn.getRemoteSocketAddress());
         }
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        loggedInUsers.remove(conn.getRemoteSocketAddress());
+        this.loggedInUsers.remove(conn.getRemoteSocketAddress());
     }
 
     @Override
@@ -63,21 +68,20 @@ public class WSServer extends WebSocketServer {
         }
         JsonObject json = element.getAsJsonObject();
         String action = json.get("action").getAsString();
-        if (!loggedInUsers.contains(conn.getRemoteSocketAddress())) {
-            if (action.equals("LOGIN " + plugin.getConfig().get("password", "fk"))) {
-                loggedInUsers.add(conn.getRemoteSocketAddress());
-                plugin.getLogger().info(conn.getRemoteSocketAddress() + " logged in.");
-                conn.send(new LoginRequired(true).toJSON());
-                conn.send(new ServerInfo(plugin).toJSON());
-                conn.send(new TeamsList(FkPI.getInstance().getTeamManager().getTeams(), playerStatus).toJSON());
+        if (!this.loggedInUsers.contains(conn.getRemoteSocketAddress())) {
+            if (action.equals("LOGIN " + this.plugin.getConfig().get("password", "fk"))) {
+                this.loggedInUsers.add(conn.getRemoteSocketAddress());
+                this.plugin.getLogger().info(conn.getRemoteSocketAddress() + " logged in.");
+                conn.send(this.serializedServerInfo);
+                conn.send(this.serializer.serialize(new TeamsList(FkPI.getInstance().getTeamManager().getTeams(), this.playerStatus)));
             } else {
-                conn.send(new LoginRequired(false).toJSON());
+                conn.send(this.serializer.serialize(new InvalidLogin()));
             }
             return;
         }
 
-        plugin.getLogger().info("Got message: " + message);
-        commandsManager.executeCommand(plugin, fkpi, this, conn, action, json);
+        this.plugin.getLogger().info("Got message: " + message);
+        this.commandsManager.executeCommand(this.plugin, this.fkpi, this, conn, action, json);
     }
 
     @Override
@@ -87,26 +91,30 @@ public class WSServer extends WebSocketServer {
 
     @Override
     public void onStart() {
-        plugin.getLogger().info("Starting websocket server");
+        this.plugin.getLogger().info("Starting websocket server");
     }
 
     public void runSync(Consumer<BukkitTask> task) {
-        plugin.getServer().getScheduler().runTaskLater(plugin, task, 1L);
+        this.plugin.getServer().getScheduler().runTask(this.plugin, task);
     }
 
     public void broadcast(Response response) {
         for (WebSocket c : getConnections()) {
-            if (loggedInUsers.contains(c.getRemoteSocketAddress())) {
-                c.send(response.toJSON());
+            if (this.loggedInUsers.contains(c.getRemoteSocketAddress())) {
+                c.send(this.serializer.serialize(response));
             }
         }
     }
 
-    public PlayerStatus getPlayerStatus() {
-        return playerStatus;
+    public @NotNull PlayerStatus getPlayerStatus() {
+        return this.playerStatus;
     }
 
-    public Fk getFk() {
-        return fk;
+    public @NotNull ResponseSerializer getSerializer() {
+        return this.serializer;
+    }
+
+    public @NotNull Fk getFk() {
+        return this.fk;
     }
 }
