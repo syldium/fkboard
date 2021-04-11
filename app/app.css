@@ -74,12 +74,11 @@ a.social-network {
 }
 
 .wiki:active {
-    color: black;
+    color: inherit;
 }
 
 a.wiki > div {
-    margin: 0 auto;
-    margin-top: -12px;
+    margin: -12px auto 0;
 }
 
 .not-supported {
