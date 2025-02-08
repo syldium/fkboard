@@ -4,7 +4,7 @@ export class DataBridge
      * Init data bridge with a websocket connection.
      * 
      * @param {WebSocket} ws 
-     * @param {string} paessword
+     * @param {string} password
      */
     constructor(ws, password)
     {
@@ -73,7 +73,8 @@ export class DataBridge
     /**
      * Send a request for team name change.
      * 
-     * @param {string} teamName 
+     * @param {string} previousName
+     * @param {string} newName
      */
     sendTeamNameChange(previousName, newName)
     {

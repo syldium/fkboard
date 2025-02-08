@@ -11,7 +11,9 @@ public class ServerInfo implements Response {
 
     public ServerInfo(@NotNull FkBoard plugin) {
         pluginVersion = plugin.getDescription().getVersion();
-        serverVersion = plugin.getServer().getVersion().replaceAll("[\\w-]+ \\(MC: ([\\d.]+)\\)", "$1");
+        String bukkitVersion = plugin.getServer().getBukkitVersion();
+        int index = bukkitVersion.indexOf("-R");
+        serverVersion = index == -1 ? bukkitVersion : bukkitVersion.substring(0, index);
     }
 
     @Override

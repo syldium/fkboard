@@ -33,7 +33,7 @@ public final class FkBoard extends JavaPlugin {
         try {
             server.stop();
             wsThread = null;
-        } catch (IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

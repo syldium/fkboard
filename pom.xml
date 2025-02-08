@@ -22,7 +22,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -31,7 +31,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -63,8 +63,8 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+             <id>syldium-repository</id>
+             <url>https://syldium.dev/maven/releases</url>
         </repository>
     </repositories>
 
@@ -73,27 +73,27 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- FallenKingdom plugin -->
         <dependency>
-            <groupId>com.github.Etrenak</groupId>
-            <artifactId>FallenKingdom</artifactId>
-            <version>v2.20.0</version>
+            <groupId>fr.devsylone</groupId>
+            <artifactId>fallenkingdom</artifactId>
+            <version>2.24.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- WebSocket server -->
         <dependency>
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
-            <version>1.5.1</version>
+            <version>1.6.0</version>
         </dependency>
         <!-- Annotations -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>18.0.0</version>
+            <version>26.0.2</version>
             <scope>provided</scope>
         </dependency>
         <!-- GSON (same as server version) -->

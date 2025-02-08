@@ -14,7 +14,6 @@ import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.rules.AllowedBlocks;
 import fr.devsylone.fkpi.rules.DisabledPotions;
 import fr.devsylone.fkpi.rules.Rule;
-import fr.devsylone.fkpi.util.BlockDescription;
 import fr.devsylone.fkpi.util.XPotionData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -44,9 +43,9 @@ class EditRuleCommand extends WSCommand {
                     return false;
                 }
                 AllowedBlocks allowedBlocks = fkpi.getRulesManager().getRule(Rule.ALLOWED_BLOCKS);
-                allowedBlocks.getValue().clear();
-                for (BlockDescription bd : parseAllowedBlocks(json.get("value").getAsJsonArray())) {
-                    allowedBlocks.getValue().add(bd);
+                allowedBlocks.fillWithDefaultValue();
+                for (Material material : parseAllowedBlocks(json.get("value").getAsJsonArray())) {
+                    allowedBlocks.add(material);
                 }
                 Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.ALLOWED_BLOCKS, allowedBlocks));
                 return true;
@@ -80,12 +79,12 @@ class EditRuleCommand extends WSCommand {
         }
     }
 
-    private List<BlockDescription> parseAllowedBlocks(JsonArray value) {
-        List<BlockDescription> allowedBlocks = new ArrayList<>();
+    private List<Material> parseAllowedBlocks(JsonArray value) {
+        List<Material> allowedBlocks = new ArrayList<>();
         for (JsonElement block : value) {
-            BlockDescription bd = new BlockDescription(block.getAsString());
-            if (Material.matchMaterial(bd.getBlockName()) != null) {
-                allowedBlocks.add(bd);
+            Material material = Material.matchMaterial(block.getAsString());
+            if (material != null) {
+                allowedBlocks.add(material);
             }
         }
         return allowedBlocks;

@@ -22,7 +22,7 @@ public class ScoreboardContent implements Response {
     public ScoreboardContent(PlaceHolder[] placeholders, List<String> lines) {
         Map<String, String> placeholdersMap = new HashMap<>();
         for (PlaceHolder placeholder : placeholders) {
-            placeholdersMap.put(placeholder.getShortestKey(), placeholder.getDescription());
+            placeholdersMap.put(placeholder.getKey(), placeholder.getDescription());
         }
         this.placeholders = placeholdersMap;
         this.lines = lines;
